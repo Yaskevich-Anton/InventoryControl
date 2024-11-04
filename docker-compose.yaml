@@ -1,0 +1,30 @@
+services:
+  postgres:
+    image: 'postgres:10'
+    environment:
+      - 'POSTGRES_DB=inventoryControlPostgres'
+      - 'POSTGRES_PASSWORD=secret'
+      - 'POSTGRES_USER=myuser'
+    ports:
+      - '5432:5432'
+  redis:
+    image: redis/redis-stack:7.2.0-v11
+    container_name: redis
+    ports:
+      - '6379:6379'
+    environment:
+      - 'REDIS_DB=InventoryControlRedis'
+      - 'REDIS_USER=admin'
+      - 'REDIS_PASSWORD=admin'
+
+        #  app:
+#    build: .
+#    environment:
+#      - SERVER_PORT=8080
+#      - IC_DB_USERNAME=myuser
+#      - IC_DB_PASSWORD=secret
+#      - IC_DB_URL= jdbc:postgresql://localhost:5432/inventoryControl
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgres

@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: ${IS_DB_USERNAME:myuser}
+    password: ${IS_DB_PASSWORD:secret}
+    url: ${SOLAR_DB_URL:jdbc:postgresql://localhost:5432/inventoryControl}
+
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+  security:
+    user:
+      name: admin
+      password: admin
+  flyway:
+    enabled: true
+    locations: classpath:db/migrations
+    baseline-on-migrate: true
+    baseline-version: 0
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+
+jwt:
+  token:
+    access:
+      expireTimeInMinutes: 60
+    refresh:
+      expireTimeInMinutes: 1440
+    secret: "testSecretKeyTest1111111"
+
+
+
