@@ -37,11 +37,11 @@ public class WebSecurityConfiguration {
         return http
                 .authorizeHttpRequests(request ->
                         request
-                                .requestMatchers(HttpMethod.POST,"/api/registration").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/login").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/api/login").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/api/v1/orders/add/{id}/{quality}").authenticated()
-                                .requestMatchers(HttpMethod.POST,"/api/v1/products").authenticated()
+//                                .requestMatchers(HttpMethod.POST,"/api/registration").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/api/login").permitAll()
+//                                .requestMatchers(HttpMethod.GET,"/api/login").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/api/v1/orders/add/{id}/{quality}").authenticated()
+//                                .requestMatchers(HttpMethod.POST,"/api/v1/products").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

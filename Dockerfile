@@ -1,21 +1,14 @@
-# Используем официальный образ Maven для сборки приложения
-FROM maven:3.8.4-openjdk-11 AS build
+# Используем официальный образ OpenJDK для Java 11 в качестве базового образа
+FROM openjdk:23
 
-# Устанавливаем директорию приложения в контейнере
+# Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
-# Копируем файлы с зависимостями и pom.xml для ускорения сборки
-COPY pom.xml .
-RUN mvn dependency:go-offline
+# Копируем JAR файл вашего Spring Boot приложения с именем InventoryControl-0.0.1-SNAPSHOT.jar в контейнер
+COPY target/InventoryControl-0.0.1-SNAPSHOT.jar /app/InventoryControl-0.0.1-SNAPSHOT.jar
 
-# Копируем исходный код приложения
-COPY src ./src
+# Открываем порт, на котором будет работать приложение
+EXPOSE 8081
 
-# Собираем приложение
-RUN mvn package
-
-# Создаем отдельный контейнер для запуска приложения
-FROM openjdk:11-jre-slim
-WORKDIR /app
-COPY --from=build /app/target/*.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+# Команда для запуска вашего Spring Boot приложения
+CMD ["java", "-jar", "InventoryControl-0.0.1-SNAPSHOT.jar"]

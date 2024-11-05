@@ -15,4 +15,5 @@ public class ProductDto {
     private String country;
     private String type;
     private Integer quantity;
+    private String photoUrl;
 }

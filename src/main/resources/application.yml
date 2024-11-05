@@ -3,7 +3,7 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${IS_DB_USERNAME:myuser}
     password: ${IS_DB_PASSWORD:secret}
-    url: ${SOLAR_DB_URL:jdbc:postgresql://localhost:5432/inventoryControl}
+    url: ${IS_DB_URL:jdbc:postgresql://localhost:5432/postgres}
 
 #  jpa:
 #    hibernate:

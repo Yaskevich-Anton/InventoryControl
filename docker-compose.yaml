@@ -1,14 +1,17 @@
+version: '3.8'
+
 services:
   postgres:
     image: 'postgres:10'
     environment:
-      - 'POSTGRES_DB=inventoryControlPostgres'
+      - 'POSTGRES_DB=inventoryControl'
       - 'POSTGRES_PASSWORD=secret'
       - 'POSTGRES_USER=myuser'
     ports:
       - '5432:5432'
+
   redis:
-    image: redis/redis-stack:7.2.0-v11
+    image: 'redis:7.2.0-v11'
     container_name: redis
     ports:
       - '6379:6379'
@@ -17,14 +20,16 @@ services:
       - 'REDIS_USER=admin'
       - 'REDIS_PASSWORD=admin'
 
-        #  app:
-#    build: .
+#  app:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
 #    environment:
 #      - SERVER_PORT=8080
 #      - IC_DB_USERNAME=myuser
 #      - IC_DB_PASSWORD=secret
-#      - IC_DB_URL= jdbc:postgresql://localhost:5432/inventoryControl
+#      - IC_DB_URL=jdbc:postgresql://postgres:5432/inventoryControl
 #    ports:
-#      - "8080:8080"
+#      - '8081:8081'
 #    depends_on:
 #      - postgres

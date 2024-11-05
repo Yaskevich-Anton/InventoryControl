@@ -79,12 +79,15 @@ public class AuthorizationService implements IAuthorizationService {
     @Override
     @Transactional
     public User register(UserDto request) {
+
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new ApplicationException(
                     HttpStatus.CONFLICT,
                     format("User with name %s did not enter and confirm email before creating User", request.getUsername()));
         }
-        boolean isPresent = userRepository.findByUsername(request.getUsername()).isPresent() || userRepository.findByEmail(request.getEmail()).isPresent();
+        boolean isPresent = userRepository.findByUsername(request.getUsername()).isPresent()
+                         || userRepository.findByEmail(request.getEmail()).isPresent()
+                         || userRepository.findByPhone(request.getPhoneNumber()).isPresent();
         if(isPresent) {
             throw new ApplicationException(
                     HttpStatus.CONFLICT,

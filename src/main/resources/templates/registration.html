@@ -33,7 +33,9 @@
         }
 
         input[type="text"],
+        input[type="email"],
         input[type="password"],
+        input[type="tel"],
         button {
             width: 100%;
             padding: 10px;
@@ -51,12 +53,32 @@
 </head>
 <body>
 <div class="container">
-    <h1>Авторизация</h1>
-    <form>
-        <input type="text" placeholder="Логин" required><br>
-        <input type="password" placeholder="Пароль" required><br>
-        <button type="submit">Авторизоваться</button>
+    <h1>Регистрация</h1>
+    <form action="/api/registration" method="post">
+        <input type="text" name="login" placeholder="Логин" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Пароль" required><br>
+        <input type="text" name="country" placeholder="Страна"><br>
+        <input type="tel" name="phoneNumber" placeholder="Номер телефона"><br>
+        <button type="submit">Зарегистрироваться</button>
     </form>
 </div>
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        // Проверка введенного email на корректность
+        let emailInput = document.getElementById('email');
+        let emailError = document.getElementById('emailError');
+        let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailPattern.test(emailInput.value)) {
+            emailError.textContent = 'Некорректный email';
+        } else {
+            emailError.textContent = '';
+            // Здесь можно добавить логику отправки формы на сервер
+        }
+    });
+</script>
 </body>
 </html>

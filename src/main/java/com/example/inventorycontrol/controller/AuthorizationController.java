@@ -31,6 +31,8 @@ public class AuthorizationController {
     public String getAutherizationPage(){
         return "authorization";
     }
+    @GetMapping("/registration")
+    public String getRegistrationPage(){return "registration";}
 
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Validated @RequestBody AuthRequestDto request) {
@@ -45,7 +47,7 @@ public class AuthorizationController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public User register(@Valid @RequestBody UserDto request) {
+    public User register(@Valid @ModelAttribute UserDto request) {
 
         return authorizationService.register(request);
     }
