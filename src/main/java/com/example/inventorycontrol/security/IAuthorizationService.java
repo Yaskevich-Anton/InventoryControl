@@ -15,7 +15,7 @@ public interface IAuthorizationService {
 
     ResponseEntity<Object> changePassword(String oldPassword, String newPassword);
 
-    User register(UserDto request);
+    ResponseEntity<User> register(UserDto request);
 
     void logout(JwtTokens userTokens);
 }

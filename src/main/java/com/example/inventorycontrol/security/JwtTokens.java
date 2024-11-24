@@ -1,5 +1,6 @@
 package com.example.inventorycontrol.security;
 
+import com.example.inventorycontrol.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,4 +15,5 @@ import org.springframework.data.redis.core.RedisHash;
 public class JwtTokens {
     private String accessToken;
     private String refreshToken;
+    private Role role; // костыль! По факту нужно дешифровать access на фронте и тащить роль оттуда, просто я не умею, дай Бог переделаю
 }

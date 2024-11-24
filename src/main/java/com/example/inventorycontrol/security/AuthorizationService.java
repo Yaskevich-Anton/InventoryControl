@@ -51,12 +51,12 @@ public class AuthorizationService implements IAuthorizationService {
         }
 
         String accessToken = tokenProvider.createAccessToken(user);
-
         String refreshToken = tokenProvider.createRefreshToken(user);
 
         JwtTokens build = JwtTokens.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .role(user.getRole())
                 .build();
         return ResponseEntity.ok(build);
     }
@@ -78,7 +78,7 @@ public class AuthorizationService implements IAuthorizationService {
     }
     @Override
     @Transactional
-    public User register(UserDto request) {
+    public ResponseEntity<User> register(UserDto request) {
 
         if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new ApplicationException(
@@ -94,7 +94,7 @@ public class AuthorizationService implements IAuthorizationService {
                     format("User with name %s and email %s already exist. Please, change your name and email",request.getUsername(),request.getEmail())
             );
         }
-        return registerLegatusUser(request);
+        return ResponseEntity.ok().body(registerLegatusUser(request));
     }
 
     public void logout(JwtTokens userTokens) {
@@ -104,7 +104,6 @@ public class AuthorizationService implements IAuthorizationService {
         String refreshToken = userTokens.getRefreshToken();
 
         if (accessToken == null || refreshToken == null) {
-            // Log the issue or handle it appropriately
             throw new IllegalArgumentException("Tokens cannot be null");
         }
 

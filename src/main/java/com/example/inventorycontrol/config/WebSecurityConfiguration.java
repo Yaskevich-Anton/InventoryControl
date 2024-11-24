@@ -42,6 +42,8 @@ public class WebSecurityConfiguration {
 //                                .requestMatchers(HttpMethod.GET,"/api/login").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/api/v1/orders/add/{id}/{quality}").authenticated()
 //                                .requestMatchers(HttpMethod.POST,"/api/v1/products").authenticated()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/user").authenticated()
+                                .requestMatchers(HttpMethod.GET,"/api/v1/orders").authenticated()
                                 .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)

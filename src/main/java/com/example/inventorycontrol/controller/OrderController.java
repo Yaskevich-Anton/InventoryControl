@@ -1,10 +1,8 @@
 package com.example.inventorycontrol.controller;
 
 import com.example.inventorycontrol.entity.Order;
-import com.example.inventorycontrol.entity.Product;
 import com.example.inventorycontrol.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,10 +26,6 @@ public class OrderController {
                 .orElseThrow(() -> new RuntimeException("Order not found with id: " + id));
     }
 
-    @PostMapping("/orders")
-    public Order createOrder() {
-        return orderService.createOrder();
-    }
     @PostMapping("/add/{id}/{quality}")
     public void addProductToOrder(@PathVariable UUID id, @PathVariable Integer quality){
         orderService.addProductToOrder(id,quality);

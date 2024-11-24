@@ -22,20 +22,15 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
-@RequestMapping("/api")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AuthorizationController {
     private final IAuthorizationService authorizationService;
 
-    @GetMapping("/login")
-    public String getAutherizationPage(){
-        return "authorization";
-    }
-    @GetMapping("/registration")
-    public String getRegistrationPage(){return "registration";}
+
 
     @PostMapping("/login")
-    public ResponseEntity<Object> login(@Validated @RequestBody AuthRequestDto request) {
+    public ResponseEntity<Object> login(@RequestBody AuthRequestDto request) {
         return authorizationService.authenticate(request.getUsername(), request.getPassword());
     }
 
@@ -47,7 +42,7 @@ public class AuthorizationController {
 
     @PostMapping("/registration")
     @ResponseStatus(HttpStatus.CREATED)
-    public User register(@Valid @ModelAttribute UserDto request) {
+    public ResponseEntity<User> register(@RequestBody UserDto request) {
 
         return authorizationService.register(request);
     }

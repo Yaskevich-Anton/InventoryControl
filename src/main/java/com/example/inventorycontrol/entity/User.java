@@ -1,10 +1,7 @@
 package com.example.inventorycontrol.entity;
 
 import com.example.inventorycontrol.entity.enums.Role;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +24,7 @@ public class User {
     private String country;
     private String phoneNumber;
     private String email;
+    @Enumerated(EnumType.STRING)
     private Role role;
 
 }

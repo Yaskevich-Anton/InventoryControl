@@ -1,43 +1,39 @@
 
-create table users
-(
-    id                uuid not null
-        primary key,
-    address           varchar(255),
-    bank_account      varchar(255),
-    bank_name         varchar(255),
-    country           varchar(255),
-    director_name     varchar(255),
-    email             varchar(255),
-    form_of_ownership varchar(255),
-    manager_name      varchar(255),
-    phone_number      varchar(255),
-    username          varchar(255)
+CREATE TABLE users (
+                             id UUID PRIMARY KEY,
+                             username VARCHAR(255) NOT NULL,
+                             password VARCHAR(255) NOT NULL,
+                             country VARCHAR(100),
+                             phone_number VARCHAR(20),
+                             email VARCHAR(255),
+                             role VARCHAR(50) NOT NULL
 );
-create table product
-(
-    measure_unit smallint
-        constraint product_measure_unit_check
-            check ((measure_unit >= 0) AND (measure_unit <= 2)),
-    price        integer,
-    id           uuid not null
-        primary key,
-    country      varchar(255),
-    description  varchar(255),
-    name         varchar(255),
-    type         varchar(255)
+CREATE TABLE product (
+                            id UUID PRIMARY KEY,
+                            name VARCHAR(255) NOT NULL,
+                            measure_unit VARCHAR(50),
+                            description TEXT,
+                            price DOUBLE PRECISION,
+                            country VARCHAR(100),
+                            type VARCHAR(50),
+                            quantity INTEGER,
+                            photo_url VARCHAR(255)
 );
-create table orders
-(
-    status  smallint
-        constraint orders_status_check
-            check ((status >= 0) AND (status <= 2)),
-    date    timestamp(6),
-    id      uuid not null
-        primary key,
-    user_id uuid not null
-        constraint fk32ql8ubntj5uh44ph9659tiih
-            references users
+CREATE TABLE orders (
+                              id UUID PRIMARY KEY,
+                              user_id UUID NOT NULL,
+                              date DATE,
+                              status VARCHAR(50),
+                              FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE order_product (
+                              order_id UUID,
+                              product_id UUID,
+                              quantity INTEGER,
+                              PRIMARY KEY (order_id, product_id),
+                              FOREIGN KEY (order_id) REFERENCES orders(id),
+                              FOREIGN KEY (product_id) REFERENCES product(id)
 );
 create table employee
 (

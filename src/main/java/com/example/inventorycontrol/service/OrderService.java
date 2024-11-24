@@ -31,7 +31,14 @@ public class OrderService {
     private final UserMapper userMapper;
 
     public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+        UserDto user = securityContextResolverService.getUserFromAuth();
+        if(user.getRole() == Role.ADMIN) {
+            return orderRepository.findAll();
+        }
+        else {
+            return orderRepository.findOrdersByUser(user.getId());
+        }
+//        return orderRepository.findAll();
     }
 
     public Optional<Order> getOrderById(UUID id) {
@@ -64,12 +71,12 @@ public class OrderService {
         }
         Product product = productOptional.get();
 
-        if(orderFromDB.isEmpty()){
+        if(orderFromDB.isEmpty() || orderFromDB.get().getStatus() != Status.WAITING){
             Order order = createOrder();
             order.setProducts(product,quality);
             orderRepository.save(order);
         }
-        Map<Product,Integer> products = new HashMap<>();
+        Map<Product,Integer> products = orderFromDB.get().getProducts();
         products.put(product,quality);
         Order changedOrder = orderFromDB.get();
         changedOrder.setProducts(products);
