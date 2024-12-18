@@ -7,7 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductDto {
+public class  ProductDto {
     private String name;
     private MeasureUnit measureUnit;
     private String description;

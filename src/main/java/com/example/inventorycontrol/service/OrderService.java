@@ -1,5 +1,6 @@
 package com.example.inventorycontrol.service;
 
+import com.example.inventorycontrol.dto.OrderDto;
 import com.example.inventorycontrol.dto.UserDto;
 import com.example.inventorycontrol.entity.Order;
 import com.example.inventorycontrol.entity.Product;
@@ -8,6 +9,7 @@ import com.example.inventorycontrol.entity.enums.Role;
 import com.example.inventorycontrol.entity.enums.Status;
 import com.example.inventorycontrol.exception.ApplicationException;
 import com.example.inventorycontrol.mapper.UserMapper;
+import com.example.inventorycontrol.repository.OrderProductRepository;
 import com.example.inventorycontrol.repository.OrderRepository;
 import com.example.inventorycontrol.repository.ProductRepository;
 import com.example.inventorycontrol.repository.UserRepository;
@@ -29,6 +31,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final SecurityContextResolverService securityContextResolverService;
     private final UserMapper userMapper;
+    private final OrderProductRepository orderProductRepository;
 
     public List<Order> getAllOrders() {
         UserDto user = securityContextResolverService.getUserFromAuth();
@@ -49,6 +52,16 @@ public class OrderService {
         return orderRepository.findByUser(user);
     }
 
+    public void setStatusOrder(OrderDto orderDto) {
+
+        Optional<Order> orderFromDb = orderRepository.findById(orderDto.getOrderId());
+        if(orderFromDb.isEmpty()) {
+            throw new ApplicationException(HttpStatus.NOT_FOUND, "Order not found");
+        }
+        Order order = orderFromDb.get();
+        order.setStatus(orderDto.getStatus());
+        orderRepository.save(order);
+    }
 
     public Order createOrder() {
         UserDto userDto = securityContextResolverService.getUserFromAuth();

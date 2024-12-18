@@ -2,6 +2,7 @@ package com.example.inventorycontrol.service;
 
 import com.example.inventorycontrol.dto.ProductDto;
 import com.example.inventorycontrol.entity.Product;
+import com.example.inventorycontrol.repository.OrderProductRepository;
 import com.example.inventorycontrol.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final OrderProductRepository orderProductRepository;
     public static final String PHOTO_DIRECTORY = System.getProperty("user.home") + "/Downloads/uploads/";
 
     public Page<Product> getAllProducts(int page, int size) {
@@ -72,9 +74,13 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public void deleteProduct(UUID uuid) {
-        log.info("Delete product: {}", uuid);
-        productRepository.deleteById(uuid);
+    @Transactional
+    public void deleteProduct(UUID id) {
+        // Сначала удаляем все связанные записи из order_product
+        orderProductRepository.deleteByProductId(id);
+
+        // Затем удаляем сам продукт
+        productRepository.deleteById(id);
     }
 
     public String uploadPhoto(UUID id, MultipartFile file) {
@@ -85,7 +91,7 @@ public class ProductService {
         productRepository.save(product);
         return photoUrl;
     }
-    // переделать на хранение в бд
+    // переделать на url
     private final Function<String, String> fileExtension = filename -> Optional.of(filename).filter(name -> name.contains("."))
             .map(name -> "." + name.substring(filename.lastIndexOf(".") + 1)).orElse(".png");
 
