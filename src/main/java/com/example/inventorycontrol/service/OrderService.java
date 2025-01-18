@@ -1,23 +1,13 @@
 package com.example.inventorycontrol.service;
 
-import com.example.inventorycontrol.dto.OrderDto;
-import com.example.inventorycontrol.dto.UserDto;
+import com.example.inventorycontrol.entity.CartItem;
+import com.example.inventorycontrol.entity.Cart;
 import com.example.inventorycontrol.entity.Order;
 import com.example.inventorycontrol.entity.Product;
-import com.example.inventorycontrol.entity.User;
-import com.example.inventorycontrol.entity.enums.Role;
 import com.example.inventorycontrol.entity.enums.Status;
-import com.example.inventorycontrol.exception.ApplicationException;
-import com.example.inventorycontrol.mapper.UserMapper;
-import com.example.inventorycontrol.repository.OrderProductRepository;
 import com.example.inventorycontrol.repository.OrderRepository;
 import com.example.inventorycontrol.repository.ProductRepository;
-import com.example.inventorycontrol.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -26,88 +16,55 @@ import java.util.*;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final OrderRepository orderRepository;
-    private final ProductRepository productRepository;
-    private final UserRepository userRepository;
-    private final SecurityContextResolverService securityContextResolverService;
-    private final UserMapper userMapper;
-    private final OrderProductRepository orderProductRepository;
+        private OrderRepository orderRepository;
+        private ProductRepository productRepository;
 
-    public List<Order> getAllOrders() {
-        UserDto user = securityContextResolverService.getUserFromAuth();
-        if(user.getRole() == Role.ADMIN) {
-            return orderRepository.findAll();
+        public void setStatusOrder(UUID uuid, Status statusOrder) {
+            Optional<Order> optionalOrder = orderRepository.findById(uuid);
+            if (optionalOrder.isPresent()) {
+                Order order = optionalOrder.get();
+                order.setStatus(statusOrder);
+
+                if (statusOrder.equals(Status.COMPLETED)) {
+                    for (Product product : order.getProducts()) {
+                        // Уменьшаем количество продукта в базе данных
+                        Optional<Product> optionalProduct = productRepository.findById(product.getId());
+                        if (optionalProduct.isPresent()) {
+                            Product dbProduct = optionalProduct.get();
+                            int newQuantity = dbProduct.getQuantity() - order.getProducts()
+                                    .stream()
+                                    .filter(p -> p.getId().equals(product.getId()))
+                                    .findFirst()
+                                    .get()
+                                    .getQuantity();
+                            dbProduct.setQuantity(newQuantity);
+                            productRepository.save(dbProduct);
+                        }
+                    }
+                }
+
+                orderRepository.save(order);
+            } else {
+                throw new IllegalArgumentException("Order not found");
+            }
         }
-        else {
-            return orderRepository.findOrdersByUser(user.getId());
+        public Order createOrder(Cart cart, String phoneNumber, String description) {
+            if (cart.getItems().isEmpty()) {
+                throw new IllegalStateException("Cart is empty!");
+            }
+
+            Order order = Order.builder()
+                    .id(UUID.randomUUID())
+                    .price(cart.getTotalAmount())
+                    .status(Status.PENDING)
+                    .phoneNumber(phoneNumber)
+                    .date(new Date())
+                    .description(description)
+                    .products(cart.getItems().stream().map(CartItem::getProduct).toList())
+                    .build();
+
+            return orderRepository.save(order);
         }
-//        return orderRepository.findAll();
-    }
-
-    public Optional<Order> getOrderById(UUID id) {
-        return orderRepository.findById(id);
-    }
-
-    public Order getCurrentOrders(User user) {
-        return orderRepository.findByUser(user);
-    }
-
-    public void setStatusOrder(OrderDto orderDto) {
-
-        Optional<Order> orderFromDb = orderRepository.findById(orderDto.getOrderId());
-        if(orderFromDb.isEmpty()) {
-            throw new ApplicationException(HttpStatus.NOT_FOUND, "Order not found");
-        }
-        Order order = orderFromDb.get();
-        order.setStatus(orderDto.getStatus());
-        orderRepository.save(order);
-    }
-
-    public Order createOrder() {
-        UserDto userDto = securityContextResolverService.getUserFromAuth();
-        User user = userMapper.toUser(userDto);
-        return Order.builder()
-                .status(Status.WAITING)
-                .date(new Date())
-                .userId(user)
-                .products(new HashMap<>())
-                .build();
-    }
-
-    public void addProductToOrder(UUID productId,Integer quality) {
-
-       UserDto user = securityContextResolverService.getUserFromAuth();
-        Optional<Order> orderFromDB = orderRepository.findOrderByUser(user.getId());
-        Optional<Product> productOptional = productRepository.findById(productId);
-        if(productOptional.isEmpty()){
-            throw new ApplicationException(HttpStatus.NOT_FOUND,"Product not found");
-        }
-        Product product = productOptional.get();
-
-        if(orderFromDB.isEmpty() || orderFromDB.get().getStatus() != Status.WAITING){
-            Order order = createOrder();
-            order.setProducts(product,quality);
-            orderRepository.save(order);
-        }
-        Map<Product,Integer> products = orderFromDB.get().getProducts();
-        products.put(product,quality);
-        Order changedOrder = orderFromDB.get();
-        changedOrder.setProducts(products);
-        orderRepository.save(changedOrder);
-
-    }
-
-
-    public void deleteOrder(UUID id) {
-        orderRepository.deleteById(id);
-    }
-
-    public void closeOrder(Order order) {
-        UserDto userDto = securityContextResolverService.getUserFromAuth();
-        Role role = userDto.getRole();
-        if(role.equals(Role.USER)){
-
-        }
-
-    }
 }
+
+

@@ -1,7 +1,7 @@
 package com.example.inventorycontrol.entity.enums;
 
 public enum Status {
-    WAITING,
+    PENDING,
     IN_PROGRESS,
     COMPLETED
 }

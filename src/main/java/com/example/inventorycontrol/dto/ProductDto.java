@@ -9,11 +9,9 @@ import lombok.*;
 @Builder
 public class  ProductDto {
     private String name;
-    private MeasureUnit measureUnit;
     private String description;
-    private Double price;
-    private String country;
-    private String type;
+    private Double price_purchase;
+    private Double price_sale;
     private Integer quantity;
     private String photoUrl;
 }

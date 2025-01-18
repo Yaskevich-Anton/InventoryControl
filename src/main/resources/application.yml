@@ -36,4 +36,9 @@ jwt:
     secret: "testSecretKeyTest1111111"
 
 
-
+server:
+  servlet:
+    session:
+      timeout: 30m
+      cookie:
+        name: MYSESSIONID

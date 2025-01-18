@@ -16,26 +16,30 @@ import java.util.*;
 @Builder
 @Table(name = "orders")
 public class Order {
-        @Id
-        @GeneratedValue
-        private UUID id;
-        @ManyToOne
-        @JoinColumn(name = "user_id", nullable = false)
-        private User userId;
-        private Date date;
-        private Status status;
-        @ElementCollection
-        @CollectionTable(name = "order_product", joinColumns = @JoinColumn(name = "order_id"))
-        @MapKeyJoinColumn(name = "product_id")
-        @Column(name = "quantity")
-        private Map<Product, Integer> products = new HashMap<>();
+    @Id
+    @GeneratedValue
+    private UUID id;
 
-    public void setProducts(Product product, int quantity) {
-        if (quantity <= 0) {
-            products.remove(product);
-        } else {
-            products.put(product, quantity);
-        }
-    }
+    private Double price;
 
+    private Status status;
+
+    private String phoneNumber;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
+
+    private String description;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "order_products",
+            joinColumns = @JoinColumn(name = "order_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

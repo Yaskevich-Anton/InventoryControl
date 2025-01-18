@@ -11,8 +11,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID> {
-    @Query("SELECT o FROM Order o WHERE o.userId = :user")
-    Order findByUser(@Param("user") User user);
+//    @Query("SELECT o FROM Order o WHERE o.user_id = :user")
+//    Order findByUser(@Param("user") User user);
 
     @Query(nativeQuery = true, value = "SELECT * FROM orders WHERE user_id = :uuid")
     Optional<Order> findOrderByUser(@Param("uuid") UUID uuid);

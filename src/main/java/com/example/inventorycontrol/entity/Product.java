@@ -7,27 +7,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@Table(name = "products")
 public class Product {
 
     @Id
     @GeneratedValue
     private UUID id;
+
     private String name;
-    private MeasureUnit measureUnit;
     private String description;
-    private Double price;
-    private String country;
-    private String type;
+    private Double price_purchase;
+    private Double price_sale;
     private Integer quantity;
     private String photoUrl;
+    private String type;
+    @ManyToMany(mappedBy = "products")
+    private List<Order> orders = new ArrayList<>();
 }

@@ -8,32 +8,34 @@ CREATE TABLE users (
                              email VARCHAR(255),
                              role VARCHAR(50) NOT NULL
 );
-CREATE TABLE product (
+CREATE TABLE products (
                             id UUID PRIMARY KEY,
                             name VARCHAR(255) NOT NULL,
-                            measure_unit VARCHAR(50),
                             description TEXT,
-                            price DOUBLE PRECISION,
-                            country VARCHAR(100),
+                            price_purchase DOUBLE PRECISION,
+                            price_sale DOUBLE PRECISION,
                             type VARCHAR(50),
                             quantity INTEGER,
                             photo_url VARCHAR(255)
 );
 CREATE TABLE orders (
-                              id UUID PRIMARY KEY,
-                              user_id UUID NOT NULL,
-                              date DATE,
-                              status VARCHAR(50),
-                              FOREIGN KEY (user_id) REFERENCES users(id)
+    id UUID PRIMARY KEY,
+    price DOUBLE PRECISION,
+    status VARCHAR(255),
+    phone_number VARCHAR(255),
+    date TIMESTAMP,
+    description VARCHAR(255),
+    user_id UUID,
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE order_product (
+CREATE TABLE order_products (
                               order_id UUID,
                               product_id UUID,
                               quantity INTEGER,
                               PRIMARY KEY (order_id, product_id),
                               FOREIGN KEY (order_id) REFERENCES orders(id),
-                              FOREIGN KEY (product_id) REFERENCES product(id)
+                              FOREIGN KEY (product_id) REFERENCES products(id)
 );
 create table employee
 (

@@ -6,7 +6,7 @@ services:
     environment:
       - 'POSTGRES_DB=inventoryControl'
       - 'POSTGRES_PASSWORD=secret'
-      - 'POSTGRES_USER=myuser'
+      - 'POSTGRES_USER=myuserrf'
     ports:
       - '5432:5432'
 
